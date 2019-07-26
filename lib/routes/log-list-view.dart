@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:activity_log_app/models/log-model.dart';
+import 'package:activity_log_app/routes/log-editor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 
-class ListViewApiState extends StatefulWidget {
-  _ListViewApiState createState() => _ListViewApiState();
+class ActivityLogListView extends StatefulWidget {
+  _ActivityLogListViewState createState() => _ActivityLogListViewState();
 }
 
-class _ListViewApiState extends State<ListViewApiState> {
+class _ActivityLogListViewState extends State<ActivityLogListView> {
   static final String apiDomain = 'http://activitylogdemo.ajdrafts.com';
   final String taskApiUrl = '$apiDomain/Controller/TaskController.php';
   final String taskTypeApiUrl = '$apiDomain/Controller/TaskTypeController.php';
@@ -26,31 +26,6 @@ class _ListViewApiState extends State<ListViewApiState> {
     }).toList();
 
     return logList;
-  }
-
-  void _viewLog(Log log) {
-    showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: Text(log.title),
-            children: <Widget>[
-              SimpleDialogOption(
-                child: Text(log.type),
-              ),
-              SimpleDialogOption(
-                child: Text(log.description),
-              ),
-              SimpleDialogOption(
-                child: new InkWell(
-                    child: new Text(log.link), onTap: () => launch(log.link)),
-              ),
-              SimpleDialogOption(
-                child: Text(log.date.toString()),
-              ),
-            ],
-          );
-        });
   }
 
   @override
@@ -78,22 +53,32 @@ class _ListViewApiState extends State<ListViewApiState> {
                                 color: Colors.white,
                               )),
                         ),
-                        onTap: () => _viewLog(log),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LogEditor(log: log))),
                       ))
                   .toList(),
             );
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _viewLog(Log(
-              id: 0,
-              type: '',
-              title: '',
-              description: '',
-              link: '',
-              date: null,
-              timestamp: null,
-              rowCount: 0)),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LogEditor(
+                log: Log(
+                    id: 0,
+                    type: '',
+                    title: '',
+                    description: '',
+                    link: '',
+                    date: null,
+                    timestamp: null,
+                    rowCount: 0),
+              ),
+            ),
+          ),
           tooltip: 'Add new log',
           child: Icon(Icons.add),
         ));

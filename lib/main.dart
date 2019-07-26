@@ -1,4 +1,4 @@
-import 'package:activity_log_app/data/log-data.dart';
+import 'package:activity_log_app/routes/log-list-view.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
           primarySwatch: Colors.blue),
-      home: ListViewApiState(),
+      home: ActivityLogListView(),
     );
   }
 }
