@@ -56,7 +56,7 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LogEditor(log: log))),
+                                builder: (context) => LogEditor(log))),
                       ))
                   .toList(),
             );
@@ -67,7 +67,7 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
             context,
             MaterialPageRoute(
               builder: (context) => LogEditor(
-                log: Log(
+                Log(
                     id: 0,
                     type: '',
                     title: '',
