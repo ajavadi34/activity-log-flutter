@@ -1,4 +1,4 @@
-import 'package:activity_log_app/routes/log-list-view.dart';
+import 'package:activity_log_app/screens/log-list-view.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(LogApp());
