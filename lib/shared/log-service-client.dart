@@ -12,7 +12,11 @@ class LogServiceClient {
   final String taskApiUrl = '$apiDomain/Controller/TaskController.php';
   final String taskTypeApiUrl = '$apiDomain/Controller/TaskTypeController.php';
   static final LogServiceClient _logServiceClient =
-      new LogServiceClient._internal();
+      LogServiceClient._internal();
+  final Map<String, String> headers = {
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+  };
 
   LogServiceClient._internal();
 
@@ -36,10 +40,6 @@ class LogServiceClient {
 
   Future<bool> saveLog(Log log) async {
     http.Response response;
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    };
 
     debugPrint(log.date.toString());
     debugPrint(DateFormat('yyyy/MM/dd').format(log.date));
@@ -72,6 +72,24 @@ class LogServiceClient {
           'Date': log.date.toString()
         }),
       );
+    }
+
+    if (response.statusCode == HttpStatus.ok)
+      return true;
+    else
+      return false;
+  }
+
+  Future<bool> deleteLog(int logId) async {
+    final client = http.Client();
+    http.StreamedResponse response;
+    final String request = json.encode({'Id': logId});
+
+    try {
+      response = await client
+          .send(http.Request('DELETE', Uri.parse(taskApiUrl))..body = request);
+    } finally {
+      client.close();
     }
 
     if (response.statusCode == HttpStatus.ok)

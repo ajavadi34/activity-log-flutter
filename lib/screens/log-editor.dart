@@ -49,167 +49,171 @@ class _LogEditorState extends State<LogEditor> {
         title: Text("Log Editor"),
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        padding: EdgeInsets.all(15.0),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding:
-                  EdgeInsets.only(top: _formDistance, bottom: _formDistance),
-              child: TextField(
-                controller: typeController,
-                style: textStyle,
-                decoration: InputDecoration(
-                  labelText: "Type",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(15.0),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _formDistance, bottom: _formDistance),
+                child: TextField(
+                  controller: typeController,
+                  style: textStyle,
+                  decoration: InputDecoration(
+                    labelText: "Type",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.only(top: _formDistance, bottom: _formDistance),
-              child: TextField(
-                controller: titleController,
-                style: textStyle,
-                decoration: InputDecoration(
-                  labelText: "Title",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _formDistance, bottom: _formDistance),
+                child: TextField(
+                  controller: titleController,
+                  style: textStyle,
+                  decoration: InputDecoration(
+                    labelText: "Title",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.only(top: _formDistance, bottom: _formDistance),
-              child: TextField(
-                controller: descriptionController,
-                style: textStyle,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: "Description",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _formDistance, bottom: _formDistance),
+                child: TextField(
+                  controller: descriptionController,
+                  style: textStyle,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: "Description",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.only(top: _formDistance, bottom: _formDistance),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: linkController,
-                      style: textStyle,
-                      decoration: InputDecoration(
-                        labelText: "Link",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _formDistance, bottom: _formDistance),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: linkController,
+                        style: textStyle,
+                        decoration: InputDecoration(
+                          labelText: "Link",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    width: 60.0,
-                    child: InkWell(
-                      child: Icon(
-                        Icons.open_in_new,
-                        size: 35,
-                        color: Theme.of(context).primaryColor,
+                    Container(
+                      width: 60.0,
+                      child: InkWell(
+                        child: Icon(
+                          Icons.open_in_new,
+                          size: 35,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onTap: () => launch(log.link),
                       ),
-                      onTap: () => launch(log.link),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.only(top: _formDistance, bottom: _formDistance),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: dateController,
-                      style: textStyle,
-                      decoration: InputDecoration(
-                        labelText: "Date",
-                        //hintText: DateFormat('d-MM-yyyy').format(dateSelected).toString(),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _formDistance, bottom: _formDistance),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: dateController,
+                        style: textStyle,
+                        decoration: InputDecoration(
+                          labelText: "Date",
+                          //hintText: DateFormat('d-MM-yyyy').format(dateSelected).toString(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    width: 60.0,
-                    child: InkWell(
-                      child: Icon(
-                        Icons.calendar_today,
-                        size: 35,
-                        color: Theme.of(context).primaryColor,
+                    Container(
+                      width: 60.0,
+                      child: InkWell(
+                        child: Icon(
+                          Icons.calendar_today,
+                          size: 35,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onTap: () => _selectDate(context),
                       ),
-                      onTap: () => _selectDate(context),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.only(top: _formDistance, bottom: _formDistance),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: RaisedButton(
-                      color: Theme.of(context).primaryColorDark,
-                      textColor: Theme.of(context).primaryColorLight,
-                      onPressed: () {
-                        Log updatedLog = Log(
-                          id: log.id,
-                          type: typeController.text,
-                          title: titleController.text,
-                          description: descriptionController.text,
-                          link: linkController.text,
-                          date: DateTime.parse(dateController.text),
-                        );
-                        LogServiceClient().saveLog(updatedLog).then((success) {
-                          if (success)
-                            Navigator.pop(context);
-                          else
-                            debugPrint('failed');
-                        }).catchError((error) {
-                          print(error);
-                        });
-                      },
-                      child: Text(
-                        'Save',
-                        textScaleFactor: 1.5,
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _formDistance, bottom: _formDistance),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        color: Theme.of(context).primaryColorDark,
+                        textColor: Theme.of(context).primaryColorLight,
+                        onPressed: () {
+                          Log updatedLog = Log(
+                            id: log.id,
+                            type: typeController.text,
+                            title: titleController.text,
+                            description: descriptionController.text,
+                            link: linkController.text,
+                            date: DateTime.parse(dateController.text),
+                          );
+                          LogServiceClient()
+                              .saveLog(updatedLog)
+                              .then((success) {
+                            if (success)
+                              Navigator.pop(context);
+                            else
+                              debugPrint('failed');
+                          }).catchError((error) {
+                            print(error);
+                          });
+                        },
+                        child: Text(
+                          'Save',
+                          textScaleFactor: 1.5,
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    width: _formDistance * 5,
-                  ),
-                  Expanded(
-                    child: RaisedButton(
-                      color: Theme.of(context).buttonColor,
-                      textColor: Theme.of(context).primaryColorDark,
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'Cancel',
-                        textScaleFactor: 1.5,
+                    Container(
+                      width: _formDistance * 5,
+                    ),
+                    Expanded(
+                      child: RaisedButton(
+                        color: Theme.of(context).buttonColor,
+                        textColor: Theme.of(context).primaryColorDark,
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          'Cancel',
+                          textScaleFactor: 1.5,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -231,7 +235,7 @@ class _LogEditorState extends State<LogEditor> {
 
     if (selectedDate != null) {
       dateController.text = selectedDate.toString();
-          //DateFormat('yyyy-MM-dd').format(selectedDate);
+      //DateFormat('yyyy-MM-dd').format(selectedDate);
     }
   }
 }
