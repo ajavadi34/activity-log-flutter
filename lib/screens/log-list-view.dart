@@ -38,24 +38,28 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => LogEditor(log)),
-                          ),
+                          ).then((response) {
+                            if (response)
+                              HelperWidgets().showSnackBar(context, 'Saved log #${log.id} - ${log.title}');
+                          }),
                       onLongPress: () {
-                        HelperWidgets().showConfirmDialog(context,
+                        HelperWidgets()
+                            .showConfirmDialog(context,
                                 'Do you want to delete log #${log.id} - ${log.title}?')
                             .then((result) {
                           if (!result) return;
 
                           LogServiceClient().deleteLog(log.id).then((response) {
                             if (response) {
-                              HelperWidgets().showSnackBar(context, 'Deleted log #${log.id} - ${log.title}');
+                              HelperWidgets().showSnackBar(context,
+                                  'Deleted log #${log.id} - ${log.title}');
                               setState(() {});
                             } else {
-                              HelperWidgets().showSnackBar(context, 'Failed to delete log #${log.id}');
+                              HelperWidgets().showSnackBar(
+                                  context, 'Failed to delete log #${log.id}');
                             }
                           });
-                        }).catchError(
-                          (error) => HelperWidgets().showSnackBar(context, 'Failed to delete log #${log.id}')
-                        );
+                        }).catchError((error) => {});
                       }))
                   .toList(),
             );

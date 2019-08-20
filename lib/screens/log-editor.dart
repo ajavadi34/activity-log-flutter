@@ -1,4 +1,5 @@
 import 'package:activity_log_app/models/log.dart';
+import 'package:activity_log_app/shared/helper-widgets.dart';
 import 'package:activity_log_app/shared/log-service-client.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -182,12 +183,14 @@ class _LogEditorState extends State<LogEditor> {
                               .saveLog(updatedLog)
                               .then((success) {
                             if (success)
-                              Navigator.pop(context);
+                              Navigator.pop(context, success);
                             else
-                              debugPrint('failed');
-                          }).catchError((error) {
-                            print(error);
-                          });
+                              HelperWidgets()
+                                .showSnackBar(context, 'Failed to save log');
+                          }).catchError(
+                            (error) => HelperWidgets()
+                                .showSnackBar(context, error.toString()),
+                          );
                         },
                         child: Text(
                           'Save',

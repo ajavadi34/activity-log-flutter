@@ -74,10 +74,7 @@ class LogServiceClient {
       );
     }
 
-    if (response.statusCode == HttpStatus.ok)
-      return true;
-    else
-      return false;
+    return response.statusCode == HttpStatus.ok;
   }
 
   Future<bool> deleteLog(int logId) async {
@@ -92,9 +89,6 @@ class LogServiceClient {
       client.close();
     }
 
-    if (response.statusCode == HttpStatus.ok)
-      return true;
-    else
-      return false;
+    return response.statusCode == HttpStatus.ok;
   }
 }
