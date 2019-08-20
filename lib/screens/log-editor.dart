@@ -1,3 +1,4 @@
+import 'package:activity_log_app/models/log-type.dart';
 import 'package:activity_log_app/models/log.dart';
 import 'package:activity_log_app/shared/helper-widgets.dart';
 import 'package:activity_log_app/shared/log-service-client.dart';
@@ -15,14 +16,21 @@ class LogEditor extends StatefulWidget {
 class _LogEditorState extends State<LogEditor> {
   Log log;
 
-  TextEditingController typeController = TextEditingController();
+  int _selectedLogTypeId;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController linkController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
+  // todo: load this from server
+  List<LogType> logTypes = [
+    LogType(typeId: 1, name: 'Events', hasTasks: 1),
+    LogType(typeId: 2, name: 'Stuff', hasTasks: 1),
+    LogType(typeId: 3, name: 'Misc', hasTasks: 0)
+  ];
+
   _LogEditorState(this.log) {
-    typeController.text = log.type;
+    _selectedLogTypeId = this.log.type != '' ? logTypes.firstWhere((type) => type.name == this.log.type).typeId : null;
     titleController.text = log.title;
     descriptionController.text = log.description;
     linkController.text = log.link;
@@ -32,7 +40,6 @@ class _LogEditorState extends State<LogEditor> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    typeController.dispose();
     titleController.dispose();
     descriptionController.dispose();
     linkController.dispose();
@@ -58,15 +65,21 @@ class _LogEditorState extends State<LogEditor> {
               Padding(
                 padding:
                     EdgeInsets.only(top: _formDistance, bottom: _formDistance),
-                child: TextField(
-                  controller: typeController,
-                  style: textStyle,
-                  decoration: InputDecoration(
-                    labelText: "Type",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
+                child: DropdownButton(
+                  // style: textStyle,
+                  hint: Text('Select a type'),
+                  value: _selectedLogTypeId,
+                  items: logTypes.map((LogType logType) {
+                    return DropdownMenuItem<int>(
+                      value: logType.typeId,
+                      child: Text(logType.name),
+                    );
+                  }).toList(),
+                  onChanged: (selectedLogType) {
+                    setState(() {
+                     _selectedLogTypeId = selectedLogType;
+                    });
+                  },
                 ),
               ),
               Padding(
@@ -173,7 +186,8 @@ class _LogEditorState extends State<LogEditor> {
                         onPressed: () {
                           Log updatedLog = Log(
                             id: log.id,
-                            type: typeController.text,
+                            type: log.type,
+                            typeId: _selectedLogTypeId,
                             title: titleController.text,
                             description: descriptionController.text,
                             link: linkController.text,
@@ -186,7 +200,7 @@ class _LogEditorState extends State<LogEditor> {
                               Navigator.pop(context, success);
                             else
                               HelperWidgets()
-                                .showSnackBar(context, 'Failed to save log');
+                                  .showSnackBar(context, 'Failed to save log');
                           }).catchError(
                             (error) => HelperWidgets()
                                 .showSnackBar(context, error.toString()),

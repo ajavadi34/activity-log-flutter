@@ -1,4 +1,5 @@
 import 'package:activity_log_app/models/log.dart';
+import 'package:activity_log_app/shared/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -8,11 +9,11 @@ import 'package:intl/intl.dart';
 
 /// Singleton class used for making http calls to PHP web service
 class LogServiceClient {
-  static final String apiDomain = 'http://activitylogdemo.ajdrafts.com';
-  final String taskApiUrl = '$apiDomain/Controller/TaskController.php';
-  final String taskTypeApiUrl = '$apiDomain/Controller/TaskTypeController.php';
+  final String taskApiUrl = Constants.taskApiUrl;
+
   static final LogServiceClient _logServiceClient =
       LogServiceClient._internal();
+      
   final Map<String, String> headers = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
@@ -52,7 +53,7 @@ class LogServiceClient {
         headers: headers,
         body: json.encode({
           'Id': log.id,
-          'TypeId': '2',
+          'TypeId': log.typeId,
           'Title': log.title,
           'Description': log.description,
           'Link': log.link,
@@ -65,7 +66,7 @@ class LogServiceClient {
         taskApiUrl,
         headers: headers,
         body: json.encode({
-          'TypeId': "1",
+          'TypeId': log.typeId,
           'Title': log.title,
           'Description': log.description,
           'Link': log.link,

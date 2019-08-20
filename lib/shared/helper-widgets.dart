@@ -6,6 +6,7 @@ class HelperWidgets {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
+        duration: Duration(seconds: 2),
       ),
     );
   }

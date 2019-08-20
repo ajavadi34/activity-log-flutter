@@ -1,6 +1,7 @@
 class Log {
   int id;
   String type;
+  int typeId;
   String title;
   String description;
   String link;
@@ -11,6 +12,7 @@ class Log {
   Log({
     this.id,
     this.type,
+    this.typeId,
     this.title,
     this.description,
     this.link,
