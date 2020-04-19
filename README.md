@@ -1,4 +1,4 @@
-# activity_log_app
+# activity-log-flutter
 
 A new Flutter project.
 
