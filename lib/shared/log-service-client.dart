@@ -12,6 +12,9 @@ import 'package:intl/intl.dart';
 class LogServiceClient {
   final String taskApiUrl = Constants.taskApiUrl;
   List<LogType> _logTypeList = [];
+  bool _hasPreviousPage = false;
+  bool _hasNextPage = false;
+  int _totalPages = 0;
 
   static final LogServiceClient _logServiceClient =
       LogServiceClient._internal();
@@ -31,6 +34,12 @@ class LogServiceClient {
     return _logTypeList;
   }
 
+  bool get hasPreviousPage => _hasPreviousPage;
+
+  bool get hasNextPage => _hasNextPage;
+
+  int get totalPages => _totalPages;
+
   Future<List<Log>> getLogs(int typeId, int pageNumber) async {
     var getLogsUrl = '$taskApiUrl?Type=$typeId&PageNumber=$pageNumber';
     var response = await http.get(getLogsUrl);
@@ -47,6 +56,13 @@ class LogServiceClient {
     List<Log> logList = items['rows'].map<Log>((log) {
       return Log.fromJson(log);
     }).toList();
+
+    _hasPreviousPage = items['pageNumber'] > 1;
+
+    _hasNextPage =
+        (items['totalRows'] * items['pageNumber']) % items['pageSize'] > 0;
+
+    _totalPages = (items['totalRows'] / items['pageSize']).ceil();
 
     return logList;
   }

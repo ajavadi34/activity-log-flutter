@@ -12,7 +12,7 @@ class ActivityLogListView extends StatefulWidget {
 
 class _ActivityLogListViewState extends State<ActivityLogListView> {
   int _selectedLogTypeId = 0;
-  int _pageNumber = 0;
+  int _currentPage = 1;
   LogServiceClient _logServiceClient = LogServiceClient();
 
   Widget _getLinkIcon(String link) {
@@ -28,6 +28,36 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
         width: 40,
       );
     }
+  }
+
+  List<ListTile> _getPagesButton() {
+    return <ListTile>[
+      ListTile(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  setState(() {
+                    _currentPage--;
+                  });
+                }),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Text('$_currentPage / ${_logServiceClient.totalPages}'),
+            ),
+            IconButton(
+                icon: Icon(Icons.arrow_forward),
+                onPressed: () {
+                  setState(() {
+                    _currentPage++;
+                  });
+                }),
+          ],
+        ),
+      )
+    ];
   }
 
   @override
@@ -61,55 +91,58 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
           ],
         ),
         body: FutureBuilder<List<Log>>(
-          future: _logServiceClient.getLogs(_selectedLogTypeId, _pageNumber),
+          future: _logServiceClient.getLogs(_selectedLogTypeId, _currentPage),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
               return Center(child: CircularProgressIndicator());
 
             return ListView(
               children: snapshot.data
-                  .map((log) => ListTile(
-                      title: Text(log.title),
-                      subtitle: Text(log.description),
-                      leading: CircleAvatar(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        child: Text(log.rowCount.toString(),
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.white,
-                            )),
-                      ),
-                      trailing: _getLinkIcon(log.link),
-                      onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LogEditor(log),
-                            ),
-                          ).then((response) {
-                            if (response)
-                              HelperWidgets().showSnackBar(context,
-                                  'Saved log #${log.id} - ${log.title}');
-                          }),
-                      onLongPress: () {
-                        HelperWidgets()
-                            .showConfirmDialog(context,
-                                'Do you want to delete log #${log.id} - ${log.title}?')
-                            .then((result) {
-                          if (!result) return;
+                      .map((log) => ListTile(
+                          title: Text(log.title),
+                          subtitle: Text(log.description),
+                          leading: CircleAvatar(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            child: Text(log.rowCount.toString(),
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                )),
+                          ),
+                          trailing: _getLinkIcon(log.link),
+                          onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LogEditor(log),
+                                ),
+                              ).then((response) {
+                                if (response)
+                                  HelperWidgets().showSnackBar(context,
+                                      'Saved log #${log.id} - ${log.title}');
+                              }),
+                          onLongPress: () {
+                            HelperWidgets()
+                                .showConfirmDialog(context,
+                                    'Do you want to delete log #${log.id} - ${log.title}?')
+                                .then((result) {
+                              if (!result) return;
 
-                          _logServiceClient.deleteLog(log.id).then((response) {
-                            if (response) {
-                              HelperWidgets().showSnackBar(context,
-                                  'Deleted log #${log.id} - ${log.title}');
-                              setState(() {});
-                            } else {
-                              HelperWidgets().showSnackBar(
-                                  context, 'Failed to delete log #${log.id}');
-                            }
-                          });
-                        }).catchError((error) => {});
-                      }))
-                  .toList(),
+                              _logServiceClient
+                                  .deleteLog(log.id)
+                                  .then((response) {
+                                if (response) {
+                                  HelperWidgets().showSnackBar(context,
+                                      'Deleted log #${log.id} - ${log.title}');
+                                  setState(() {});
+                                } else {
+                                  HelperWidgets().showSnackBar(context,
+                                      'Failed to delete log #${log.id}');
+                                }
+                              });
+                            }).catchError((error) => {});
+                          }))
+                      .toList() +
+                  _getPagesButton(),
             );
           },
         ),
