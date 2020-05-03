@@ -1,3 +1,4 @@
+import 'package:activity_log_app/models/log-type.dart';
 import 'package:activity_log_app/models/log.dart';
 import 'package:activity_log_app/shared/constants.dart';
 import 'package:flutter/foundation.dart';
@@ -10,10 +11,11 @@ import 'package:intl/intl.dart';
 /// Singleton class used for making http calls to PHP web service
 class LogServiceClient {
   final String taskApiUrl = Constants.taskApiUrl;
+  List<LogType> _logTypeList = [];
 
   static final LogServiceClient _logServiceClient =
       LogServiceClient._internal();
-      
+
   final Map<String, String> headers = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
@@ -25,6 +27,10 @@ class LogServiceClient {
     return _logServiceClient;
   }
 
+  List<LogType> getLogTypes() {
+    return _logTypeList;
+  }
+
   Future<List<Log>> fetchLogs() async {
     var response = await http.get(taskApiUrl);
 
@@ -32,6 +38,11 @@ class LogServiceClient {
       throw Exception('Failed to load logs');
 
     final items = json.decode(response.body).cast<String, dynamic>();
+
+    _logTypeList = items['types'].map<LogType>((logType) {
+      return LogType.fromJson(logType);
+    }).toList();
+
     List<Log> logList = items['rows'].map<Log>((log) {
       return Log.fromJson(log);
     }).toList();

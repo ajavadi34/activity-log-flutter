@@ -15,6 +15,7 @@ class LogEditor extends StatefulWidget {
 
 class _LogEditorState extends State<LogEditor> {
   Log log;
+  LogServiceClient logServiceClient = LogServiceClient();
 
   int _selectedLogTypeId;
   TextEditingController titleController = TextEditingController();
@@ -22,16 +23,12 @@ class _LogEditorState extends State<LogEditor> {
   TextEditingController linkController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
-  // todo: load this from server
-  List<LogType> logTypes = [
-    LogType(typeId: 1, name: 'Events', hasTasks: 1),
-    LogType(typeId: 2, name: 'Stuff', hasTasks: 1),
-    LogType(typeId: 3, name: 'Misc', hasTasks: 0)
-  ];
-
   _LogEditorState(this.log) {
     _selectedLogTypeId = this.log.type != ''
-        ? logTypes.firstWhere((type) => type.name == this.log.type).typeId
+        ? logServiceClient
+            .getLogTypes()
+            .firstWhere((type) => type.name == this.log.type)
+            .typeId
         : null;
     titleController.text = log.title;
     descriptionController.text = log.description;
@@ -72,7 +69,7 @@ class _LogEditorState extends State<LogEditor> {
                   style: textStyle,
                   hint: Text('Select a type'),
                   value: _selectedLogTypeId,
-                  items: logTypes.map((LogType logType) {
+                  items: logServiceClient.getLogTypes().map((LogType logType) {
                     return DropdownMenuItem<int>(
                       value: logType.typeId,
                       child: Text(logType.name),
