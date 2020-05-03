@@ -1,3 +1,4 @@
+import 'package:activity_log_app/models/log-type.dart';
 import 'package:activity_log_app/models/log.dart';
 import 'package:activity_log_app/screens/log-editor.dart';
 import 'package:activity_log_app/shared/helper-widgets.dart';
@@ -9,14 +10,42 @@ class ActivityLogListView extends StatefulWidget {
 }
 
 class _ActivityLogListViewState extends State<ActivityLogListView> {
+  int _selectedLogTypeId = 0;
+  int _pageNumber = 0;
+  LogServiceClient _logServiceClient = LogServiceClient();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('Logs'),
+          actions: <Widget>[
+            PopupMenuButton(
+              icon: Icon(Icons.filter_list),
+              itemBuilder: (BuildContext context) {
+                return [
+                      PopupMenuItem(
+                        value: 0,
+                        child: Text('No Filter'),
+                      )
+                    ] +
+                    _logServiceClient.getLogTypes().map((LogType logType) {
+                      return PopupMenuItem<int>(
+                        value: logType.typeId,
+                        child: Text(logType.name),
+                      );
+                    }).toList();
+              },
+              onSelected: (selectedLogType) {
+                setState(() {
+                  _selectedLogTypeId = selectedLogType;
+                });
+              },
+            )
+          ],
         ),
         body: FutureBuilder<List<Log>>(
-          future: LogServiceClient().fetchLogs(),
+          future: _logServiceClient.getLogs(_selectedLogTypeId, _pageNumber),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
               return Center(child: CircularProgressIndicator());
@@ -51,7 +80,7 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
                             .then((result) {
                           if (!result) return;
 
-                          LogServiceClient().deleteLog(log.id).then((response) {
+                          _logServiceClient.deleteLog(log.id).then((response) {
                             if (response) {
                               HelperWidgets().showSnackBar(context,
                                   'Deleted log #${log.id} - ${log.title}');

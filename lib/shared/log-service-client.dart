@@ -31,8 +31,9 @@ class LogServiceClient {
     return _logTypeList;
   }
 
-  Future<List<Log>> fetchLogs() async {
-    var response = await http.get(taskApiUrl);
+  Future<List<Log>> getLogs(int typeId, int pageNumber) async {
+    var getLogsUrl = '$taskApiUrl?Type=$typeId&PageNumber=$pageNumber';
+    var response = await http.get(getLogsUrl);
 
     if (response.statusCode != HttpStatus.ok)
       throw Exception('Failed to load logs');
