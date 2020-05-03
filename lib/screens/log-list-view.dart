@@ -37,10 +37,12 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
                       onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LogEditor(log)),
+                              builder: (context) => LogEditor(log),
+                            ),
                           ).then((response) {
                             if (response)
-                              HelperWidgets().showSnackBar(context, 'Saved log #${log.id} - ${log.title}');
+                              HelperWidgets().showSnackBar(context,
+                                  'Saved log #${log.id} - ${log.title}');
                           }),
                       onLongPress: () {
                         HelperWidgets()

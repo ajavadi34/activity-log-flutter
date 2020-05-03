@@ -30,7 +30,9 @@ class _LogEditorState extends State<LogEditor> {
   ];
 
   _LogEditorState(this.log) {
-    _selectedLogTypeId = this.log.type != '' ? logTypes.firstWhere((type) => type.name == this.log.type).typeId : null;
+    _selectedLogTypeId = this.log.type != ''
+        ? logTypes.firstWhere((type) => type.name == this.log.type).typeId
+        : null;
     titleController.text = log.title;
     descriptionController.text = log.description;
     linkController.text = log.link;
@@ -50,7 +52,7 @@ class _LogEditorState extends State<LogEditor> {
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
-    final double _formDistance = 5.0;
+    final double _formDistance = 10.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,14 +61,15 @@ class _LogEditorState extends State<LogEditor> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(15.0),
+          padding: EdgeInsets.all(20.0),
           child: Column(
             children: <Widget>[
               Padding(
                 padding:
                     EdgeInsets.only(top: _formDistance, bottom: _formDistance),
                 child: DropdownButton(
-                  // style: textStyle,
+                  isExpanded: true,
+                  style: textStyle,
                   hint: Text('Select a type'),
                   value: _selectedLogTypeId,
                   items: logTypes.map((LogType logType) {
@@ -77,7 +80,7 @@ class _LogEditorState extends State<LogEditor> {
                   }).toList(),
                   onChanged: (selectedLogType) {
                     setState(() {
-                     _selectedLogTypeId = selectedLogType;
+                      _selectedLogTypeId = selectedLogType;
                     });
                   },
                 ),
@@ -213,7 +216,7 @@ class _LogEditorState extends State<LogEditor> {
                       ),
                     ),
                     Container(
-                      width: _formDistance * 5,
+                      width: _formDistance * 3,
                     ),
                     Expanded(
                       child: RaisedButton(
