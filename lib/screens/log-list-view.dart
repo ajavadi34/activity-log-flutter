@@ -4,6 +4,7 @@ import 'package:activity_log_app/screens/log-editor.dart';
 import 'package:activity_log_app/shared/helper-widgets.dart';
 import 'package:activity_log_app/shared/log-service-client.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ActivityLogListView extends StatefulWidget {
   _ActivityLogListViewState createState() => _ActivityLogListViewState();
@@ -13,6 +14,21 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
   int _selectedLogTypeId = 0;
   int _pageNumber = 0;
   LogServiceClient _logServiceClient = LogServiceClient();
+
+  Widget _getLinkIcon(String link) {
+    if (link != null && link.isNotEmpty) {
+      return IconButton(
+        icon: Icon(Icons.link),
+        onPressed: () {
+          launch(link);
+        },
+      );
+    } else {
+      return SizedBox(
+        width: 40,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +79,7 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
                               color: Colors.white,
                             )),
                       ),
+                      trailing: _getLinkIcon(log.link),
                       onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
