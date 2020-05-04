@@ -57,12 +57,11 @@ class LogServiceClient {
       return Log.fromJson(log);
     }).toList();
 
+    _totalPages = (items['totalRows'] / items['pageSize']).ceil();
+
     _hasPreviousPage = items['pageNumber'] > 1;
 
-    _hasNextPage =
-        (items['totalRows'] * items['pageNumber']) % items['pageSize'] > 0;
-
-    _totalPages = (items['totalRows'] / items['pageSize']).ceil();
+    _hasNextPage = _totalPages > items['pageNumber'];
 
     return logList;
   }

@@ -30,6 +30,30 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
     }
   }
 
+  Function _incrementPage() {
+    if (!_logServiceClient.hasNextPage) {
+      return null;
+    }
+
+    return () {
+      setState(() {
+        _currentPage++;
+      });
+    };
+  }
+
+  Function _decrementPage() {
+    if (!_logServiceClient.hasPreviousPage) {
+      return null;
+    }
+
+    return () {
+      setState(() {
+        _currentPage--;
+      });
+    };
+  }
+
   List<ListTile> _getPagesButton() {
     return <ListTile>[
       ListTile(
@@ -37,23 +61,19 @@ class _ActivityLogListViewState extends State<ActivityLogListView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  setState(() {
-                    _currentPage--;
-                  });
-                }),
+              disabledColor: Colors.grey.shade400,
+              icon: Icon(Icons.arrow_back),
+              onPressed: _decrementPage(),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Text('$_currentPage / ${_logServiceClient.totalPages}'),
             ),
             IconButton(
-                icon: Icon(Icons.arrow_forward),
-                onPressed: () {
-                  setState(() {
-                    _currentPage++;
-                  });
-                }),
+              disabledColor: Colors.grey.shade400,
+              icon: Icon(Icons.arrow_forward),
+              onPressed: _incrementPage(),
+            ),
           ],
         ),
       )
